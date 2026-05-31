@@ -1,0 +1,54 @@
+@startuml use-cases
+title LiveMatch — Diagram przypadków użycia
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Administrator\n(sprawozdawca)" as Admin
+actor "Kibic\n(użytkownik niezalogowany)" as Fan
+
+rectangle "System LiveMatch" {
+
+    package "Zarządzanie meczami (admin)" {
+        usecase "Zaloguj się do panelu" as UC_Login
+        usecase "Utwórz nowy mecz" as UC_CreateMatch
+        usecase "Rozpocznij mecz\n(zmień status na LIVE)" as UC_StartMatch
+        usecase "Dodaj zdarzenie boiskowe\n(gol, kartka, gwizdek)" as UC_AddEvent
+        usecase "Zakończ mecz" as UC_EndMatch
+    }
+
+    package "Drużyny (admin)" {
+        usecase "Zarządzaj drużynami" as UC_ManageTeams
+    }
+
+    package "Obserwacja (kibic)" {
+        usecase "Przeglądaj listę meczów" as UC_BrowseMatches
+        usecase "Obserwuj mecz na żywo" as UC_WatchMatch
+        usecase "Zobacz oś czasu zdarzeń" as UC_ViewTimeline
+    }
+}
+
+' --- Powiązania ---
+
+Admin --> UC_Login
+Admin --> UC_CreateMatch
+Admin --> UC_StartMatch
+Admin --> UC_AddEvent
+Admin --> UC_EndMatch
+Admin --> UC_ManageTeams
+
+Fan --> UC_BrowseMatches
+Fan --> UC_WatchMatch
+Fan --> UC_ViewTimeline
+
+' Relacje między use case'ami
+UC_CreateMatch ..> UC_Login : <<include>>
+UC_StartMatch ..> UC_Login : <<include>>
+UC_AddEvent ..> UC_Login : <<include>>
+UC_EndMatch ..> UC_Login : <<include>>
+UC_ManageTeams ..> UC_Login : <<include>>
+
+UC_WatchMatch ..> UC_ViewTimeline : <<extend>>
+
+@endumlS

@@ -1,0 +1,109 @@
+@startuml sequence-add-event
+title LiveMatch — Sekwencja dodania zdarzenia meczowego (gol)
+
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+actor "Administrator" as Admin
+participant "Panel admina\n(SPA — React)" as AdminUI
+actor "Kibic" as Fan
+participant "Widok kibica\n(SPA — React)" as FanUI
+
+box "Backend (Spring Boot)" #LightBlue
+    participant "MatchEventController\n<<RestController>>" as Controller
+    participant "AuditAspect\n<<Aspect>>" as Aspect
+    participant "MatchEventService\n<<Service>>" as Service
+    participant "MatchEventRepository\n<<Repository>>" as Repo
+    participant "SimpMessagingTemplate\n<<WebSocket>>" as Broker
+end box
+
+database "PostgreSQL" as DB
+
+== Subskrypcja kibica (przed meczem lub w trakcie) ==
+
+Fan -> FanUI : otwiera widok meczu #42
+activate FanUI
+FanUI -> Broker : SUBSCRIBE /topic/matches/42
+note right of Broker : Kibic zostaje\ndodany do listy\nsubskrybentów\nkanału meczu
+deactivate FanUI
+
+== Wprowadzenie zdarzenia przez administratora ==
+
+Admin -> AdminUI : klika "GOL — gospodarze, 23. minuta"
+activate AdminUI
+
+AdminUI -> Controller : POST /api/matches/42/events\n{eventType: GOAL, minute: 23, teamId: 7}
+activate Controller
+
+Controller -> Service : addEvent(matchId, dto)
+activate Service
+
+' === Tutaj wpina się aspekt AOP ===
+Service -> Aspect : <<around advice>>\nperechwycenie wywołania
+activate Aspect
+note right of Aspect
+  Aspekt mierzy czas wykonania
+  i loguje wywołanie do AuditLog
+  (Spring AOP — wymóg projektu)
+end note
+
+Aspect -> Service : kontynuacja metody (proceed)
+
+Service -> Repo : save(matchEvent)
+activate Repo
+Repo -> DB : INSERT INTO match_events ...
+activate DB
+DB --> Repo : id = 156
+deactivate DB
+Repo --> Service : zapisana encja MatchEvent
+deactivate Repo
+
+Service -> Repo : updateScore(match)
+activate Repo
+Repo -> DB : UPDATE matches SET home_score=...
+DB --> Repo : OK
+Repo --> Service : zaktualizowany Match
+deactivate Repo
+
+Service --> Aspect : MatchEvent (wynik metody)
+Aspect -> DB : INSERT INTO audit_logs\n(method, args, time, success=true)
+note right : Zapis audytu\npoza logiką biznesową
+Aspect --> Service : zwraca oryginalny wynik
+deactivate Aspect
+
+' === Broadcast do wszystkich subskrybentów ===
+Service -> Broker : convertAndSend\n("/topic/matches/42", eventDto)
+activate Broker
+Broker -->> FanUI : MESSAGE /topic/matches/42\n{eventType: GOAL, minute: 23, ...}
+note left of Broker
+  STOMP rozsyła wiadomość
+  do KAŻDEGO subskrybenta
+  tego kanału — w tym
+  do wszystkich kibiców
+end note
+deactivate Broker
+
+Service --> Controller : zwraca DTO zdarzenia
+deactivate Service
+
+Controller --> AdminUI : 201 Created\n{event: {...}}
+deactivate Controller
+
+AdminUI --> Admin : "Zdarzenie dodane ✓"
+deactivate AdminUI
+
+== Aktualizacja widoku kibica (asynchronicznie) ==
+
+activate FanUI
+FanUI -> Fan : aktualizuje UI:\n• wynik 1:0\n• nowa pozycja na osi czasu
+note right of Fan
+  Cała operacja od kliknięcia
+  admina do widoku u kibica
+  trwa zwykle <100ms
+  bez odświeżania strony
+end note
+deactivate FanUI
+
+@enduml

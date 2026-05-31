@@ -1,0 +1,92 @@
+@startuml class-diagram-domain
+title LiveMatch — Diagram klas: model domeny (encje JPA)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide circle
+
+' === ENUMY ===
+
+enum MatchStatus {
+    SCHEDULED
+    LIVE
+    HALF_TIME
+    FINISHED
+    CANCELLED
+}
+
+enum EventType {
+    GOAL
+    YELLOW_CARD
+    RED_CARD
+    SUBSTITUTION
+    HALF_TIME_START
+    HALF_TIME_END
+    MATCH_START
+    MATCH_END
+}
+
+' === ENCJE ===
+
+class Team <<Entity>> {
+    - id : Long
+    - name : String
+    - shortName : String
+    - country : String
+}
+
+class Match <<Entity>> {
+    - id : Long
+    - startTime : LocalDateTime
+    - status : MatchStatus
+    - homeScore : Integer
+    - awayScore : Integer
+    --
+    + prePersist() : void
+}
+
+class MatchEvent <<Entity>> {
+    - id : Long
+    - eventType : EventType
+    - minuteOfMatch : Integer
+    - description : String
+    - occurredAt : LocalDateTime
+    --
+    + prePersist() : void
+}
+
+class AuditLog <<Entity>> {
+    - id : Long
+    - methodName : String
+    - methodArgs : String
+    - executionTimeMs : Long
+    - success : Boolean
+    - timestamp : LocalDateTime
+    --S
+    + prePersist() : void
+}
+
+' === RELACJE ===
+
+' Mecz ma dwie drużyny: gospodarz i gość
+Match "0..*" --> "1" Team : homeTeam
+Match "0..*" --> "1" Team : awayTeam
+
+' Mecz ma wiele zdarzeń, zdarzenie należy do jednego meczu
+Match "1" <-- "0..*" MatchEvent : match
+
+' Zdarzenie może być przypisane do drużyny (np. gol DLA kogo)
+MatchEvent "0..*" --> "0..1" Team : team
+
+' Powiązania z enumami
+Match ..> MatchStatus : uses
+MatchEvent ..> EventType : uses
+
+' AuditLog jest niezależny — wypełniany przez aspekt AOP (etap 8)
+note right of AuditLog
+  Encja niepowiązana z modelem domeny.
+  Wypełniana automatycznie przez
+  aspekt AOP (etap 8 projektu).
+end note
+
+@enduml

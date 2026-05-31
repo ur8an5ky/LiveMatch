@@ -1,4 +1,4 @@
-package pl.ur8an5ky.livematch.livematch;
+package pl.ur8an5ky.livematch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
