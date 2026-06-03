@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LiveMatch — WebSocket Test Client</title>
+    <style>
+        body { font-family: monospace; padding: 20px; max-width: 900px; margin: auto; }
+        h1 { color: #2c5530; }
+        #messages { background: #f5f5f5; padding: 10px; height: 400px; overflow-y: auto; border: 1px solid #ccc; }
+        .event { color: #2c5530; padding: 4px 0; border-bottom: 1px dashed #ccc; }
+        .status { color: #cc6600; padding: 4px 0; border-bottom: 1px dashed #ccc; }
+        .system { color: #888; font-style: italic; }
+        input, button { padding: 6px; font-family: inherit; }
+    </style>
+</head>
+<body>
+<h1>⚽ LiveMatch — WebSocket Test Client</h1>
+<p>
+    Match ID to subscribe: <input id="matchId" type="number" value="1" style="width:80px">
+    <button onclick="connect()">Connect & subscribe</button>
+    <button onclick="disconnect()">Disconnect</button>
+</p>
+<div id="messages"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+<script>
+    let client = null;
+
+    function log(text, cssClass = '') {
+        const div = document.createElement('div');
+        div.className = cssClass;
+        div.textContent = '[' + new Date().toLocaleTimeString() + '] ' + text;
+        const wrap = document.getElementById('messages');
+        wrap.appendChild(div);
+        wrap.scrollTop = wrap.scrollHeight;
+    }
+
+    function connect() {
+        const matchId = document.getElementById('matchId').value;
+        if (!matchId) return alert('Provide match ID');
+
+        client = new StompJs.Client({
+            brokerURL: 'ws://localhost:8081/ws',
+            reconnectDelay: 2000,
+            onConnect: () => {
+                log('Connected to server.', 'system');
+
+                client.subscribe('/topic/matches/' + matchId + '/events', msg => {
+                    const e = JSON.parse(msg.body);
+                    log('EVENT: ' + e.eventType
+                        + ' (min ' + (e.minuteOfMatch ?? '-') + ')'
+                        + ' team=' + (e.teamName ?? '-')
+                        + ' desc=' + (e.description ?? '-'),
+                        'event');
+                });
+
+                client.subscribe('/topic/matches/' + matchId + '/status', msg => {
+                    const s = JSON.parse(msg.body);
+                    log('STATUS: ' + s.previousStatus + ' → ' + s.newStatus, 'status');
+                });
+
+                log('Subscribed to /topic/matches/' + matchId + '/events and /status', 'system');
+            },
+            onStompError: frame => log('STOMP error: ' + frame.headers.message, 'system'),
+            onWebSocketClose: () => log('WebSocket closed.', 'system')
+        });
+
+        client.activate();
+    }
+
+    function disconnect() {
+        if (client) {
+            client.deactivate();
+            client = null;
+            log('Disconnected.', 'system');
+        }
+    }
+</script>
+</body>
+</html>
