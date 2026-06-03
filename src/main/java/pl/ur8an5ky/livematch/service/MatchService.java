@@ -1,12 +1,15 @@
 package pl.ur8an5ky.livematch.service;
 
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.ur8an5ky.livematch.domain.Match;
 import pl.ur8an5ky.livematch.domain.MatchStatus;
 import pl.ur8an5ky.livematch.dto.MatchCreateDto;
 import pl.ur8an5ky.livematch.dto.MatchDto;
+import pl.ur8an5ky.livematch.dto.MatchStatusChangeDto;
 import pl.ur8an5ky.livematch.exception.BusinessRuleViolationException;
 import pl.ur8an5ky.livematch.exception.ResourceNotFoundException;
 import pl.ur8an5ky.livematch.mapper.MatchMapper;
@@ -22,6 +25,7 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
     private final TeamService teamService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional(readOnly = true)
     public List<MatchDto> getAll(MatchStatus statusFilter) {
@@ -52,8 +56,19 @@ public class MatchService {
 
     public MatchDto updateStatus(Long id, MatchStatus newStatus) {
         Match match = findOrThrow(id);
-        validateStatusTransition(match.getStatus(), newStatus);
+        MatchStatus previousStatus = match.getStatus();
+        validateStatusTransition(previousStatus, newStatus);
         match.setStatus(newStatus);
+
+        // Broadcast the status change to all clients subscribed to this match
+        MatchStatusChangeDto notification = new MatchStatusChangeDto(
+                id, previousStatus, newStatus, LocalDateTime.now()
+        );
+        messagingTemplate.convertAndSend(
+                "/topic/matches/" + id + "/status",
+                notification
+        );
+
         return matchMapper.toDto(match);
     }
 

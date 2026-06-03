@@ -3,6 +3,7 @@ package pl.ur8an5ky.livematch.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import pl.ur8an5ky.livematch.domain.EventType;
 import pl.ur8an5ky.livematch.domain.Match;
 import pl.ur8an5ky.livematch.domain.MatchEvent;
@@ -24,6 +25,7 @@ public class MatchEventService {
     private final MatchEventMapper eventMapper;
     private final MatchService matchService;
     private final TeamService teamService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional(readOnly = true)
     public List<MatchEventDto> getByMatchId(Long matchId) {
@@ -60,6 +62,13 @@ public class MatchEventService {
             }
         }
 
-        return eventMapper.toDto(eventRepository.save(event));
+        MatchEvent savedEvent = eventRepository.save(event);
+        MatchEventDto eventDto = eventMapper.toDto(savedEvent);
+
+        // Broadcast the new event to all clients subscribed to this match
+        String destination = "/topic/matches/" + matchId + "/events";
+        messagingTemplate.convertAndSend(destination, eventDto);
+
+        return eventDto;
     }
 }
