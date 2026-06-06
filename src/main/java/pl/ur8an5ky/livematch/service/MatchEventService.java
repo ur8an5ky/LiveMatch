@@ -13,6 +13,7 @@ import pl.ur8an5ky.livematch.dto.MatchEventDto;
 import pl.ur8an5ky.livematch.exception.BusinessRuleViolationException;
 import pl.ur8an5ky.livematch.mapper.MatchEventMapper;
 import pl.ur8an5ky.livematch.repository.MatchEventRepository;
+import pl.ur8an5ky.livematch.aop.Auditable;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class MatchEventService {
                 .toList();
     }
 
+    @Auditable
     public MatchEventDto addEvent(Long matchId, MatchEventCreateDto dto) {
         Match match = matchService.findOrThrow(matchId);
 

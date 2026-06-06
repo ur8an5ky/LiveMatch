@@ -9,6 +9,7 @@ import pl.ur8an5ky.livematch.dto.TeamDto;
 import pl.ur8an5ky.livematch.exception.ResourceNotFoundException;
 import pl.ur8an5ky.livematch.mapper.TeamMapper;
 import pl.ur8an5ky.livematch.repository.TeamRepository;
+import pl.ur8an5ky.livematch.aop.Auditable;
 
 import java.util.List;
 
@@ -32,18 +33,21 @@ public class TeamService {
         return teamMapper.toDto(findOrThrow(id));
     }
 
+    @Auditable
     public TeamDto create(TeamCreateDto dto) {
         Team team = teamMapper.fromCreateDto(dto);
         Team saved = teamRepository.save(team);
         return teamMapper.toDto(saved);
     }
 
+    @Auditable
     public TeamDto update(Long id, TeamCreateDto dto) {
         Team team = findOrThrow(id);
         teamMapper.updateFromDto(team, dto);
         return teamMapper.toDto(team);
     }
 
+    @Auditable
     public void delete(Long id) {
         if (!teamRepository.existsById(id)) {
             throw new ResourceNotFoundException("Team", id);

@@ -14,6 +14,7 @@ import pl.ur8an5ky.livematch.exception.BusinessRuleViolationException;
 import pl.ur8an5ky.livematch.exception.ResourceNotFoundException;
 import pl.ur8an5ky.livematch.mapper.MatchMapper;
 import pl.ur8an5ky.livematch.repository.MatchRepository;
+import pl.ur8an5ky.livematch.aop.Auditable;
 
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class MatchService {
         return matchMapper.toDto(findOrThrow(id));
     }
 
+    @Auditable
     public MatchDto create(MatchCreateDto dto) {
         if (dto.homeTeamId().equals(dto.awayTeamId())) {
             throw new BusinessRuleViolationException(
@@ -54,6 +56,7 @@ public class MatchService {
         return matchMapper.toDto(matchRepository.save(match));
     }
 
+    @Auditable
     public MatchDto updateStatus(Long id, MatchStatus newStatus) {
         Match match = findOrThrow(id);
         MatchStatus previousStatus = match.getStatus();
@@ -72,6 +75,7 @@ public class MatchService {
         return matchMapper.toDto(match);
     }
 
+    @Auditable
     public void delete(Long id) {
         if (!matchRepository.existsById(id)) {
             throw new ResourceNotFoundException("Match", id);
