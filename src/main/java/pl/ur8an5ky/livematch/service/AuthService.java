@@ -1,0 +1,32 @@
+package pl.ur8an5ky.livematch.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import pl.ur8an5ky.livematch.domain.User;
+import pl.ur8an5ky.livematch.dto.LoginRequest;
+import pl.ur8an5ky.livematch.dto.LoginResponse;
+import pl.ur8an5ky.livematch.repository.UserRepository;
+import pl.ur8an5ky.livematch.security.JwtUtil;
+
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByUsername(request.username())
+                .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
+
+        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+            throw new BadCredentialsException("Invalid credentials");
+        }
+
+        String token = jwtUtil.generate(user.getUsername(), user.getRole().name());
+        return new LoginResponse(token, user.getUsername(), user.getRole(), jwtUtil.getExpirationMs());
+    }
+}
