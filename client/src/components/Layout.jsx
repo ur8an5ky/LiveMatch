@@ -1,6 +1,16 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Layout() {
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    };
+
     return (
         <div className="min-h-screen bg-background">
             <header className="border-b">
@@ -8,13 +18,27 @@ export default function Layout() {
                     <Link to="/" className="text-xl font-bold text-primary">
                         ⚽ LiveMatch
                     </Link>
-                    <nav className="flex gap-4">
+                    <nav className="flex items-center gap-4">
                         <Link to="/" className="text-sm hover:underline">
                             Matches
                         </Link>
-                        <Link to="/login" className="text-sm hover:underline">
-                            Admin
-                        </Link>
+                        {user ? (
+                            <>
+                                <Link to="/admin" className="text-sm hover:underline">
+                                    Admin
+                                </Link>
+                                <span className="text-sm text-muted-foreground">
+                                    {user.username}
+                                </span>
+                                <Button variant="outline" size="sm" onClick={handleLogout}>
+                                    Logout
+                                </Button>
+                            </>
+                        ) : (
+                            <Link to="/login" className="text-sm hover:underline">
+                                Login
+                            </Link>
+                        )}
                     </nav>
                 </div>
             </header>
