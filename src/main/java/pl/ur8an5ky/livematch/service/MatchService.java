@@ -52,8 +52,12 @@ public class MatchService {
                 .awayTeam(teamService.findOrThrow(dto.awayTeamId()))
                 .startTime(dto.startTime())
                 .build();
-        // status, homeScore, awayScore will be set by @PrePersist
-        return matchMapper.toDto(matchRepository.save(match));
+
+        MatchDto result = matchMapper.toDto(matchRepository.save(match));
+
+        messagingTemplate.convertAndSend("/topic/matches/created", result);
+
+        return result;
     }
 
     @Auditable
@@ -63,7 +67,6 @@ public class MatchService {
         validateStatusTransition(previousStatus, newStatus);
         match.setStatus(newStatus);
 
-        // Broadcast the status change to all clients subscribed to this match
         MatchStatusChangeDto notification = new MatchStatusChangeDto(
                 id, previousStatus, newStatus, LocalDateTime.now()
         );
@@ -88,9 +91,6 @@ public class MatchService {
                 .orElseThrow(() -> new ResourceNotFoundException("Match", id));
     }
 
-    /**
-     * Simple validation of status transitions — e.g. you cannot reopen a finished match.
-     */
     private void validateStatusTransition(MatchStatus from, MatchStatus to) {
         if (from == MatchStatus.FINISHED || from == MatchStatus.CANCELLED) {
             throw new BusinessRuleViolationException(
