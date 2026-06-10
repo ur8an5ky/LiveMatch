@@ -1,0 +1,19 @@
+import api from "./api";
+
+export const matchService = {
+    async getAll(status = null) {
+        const params = status ? { status } : {};
+        const response = await api.get("/api/matches", { params });
+        return response.data;
+    },
+
+    async getById(id) {
+        const response = await api.get(`/api/matches/${id}`);
+        return response.data;
+    },
+
+    async getEvents(matchId) {
+        const response = await api.get(`/api/matches/${matchId}/events`);
+        return response.data;
+    },
+};
