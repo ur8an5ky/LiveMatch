@@ -58,17 +58,17 @@ export default function AdminPanelPage() {
                     </Card>
                 </Link>
 
-                <Card className="p-6 opacity-60 cursor-not-allowed">
-                    <div className="flex items-center gap-3 mb-2">
-                        <Trophy className="h-6 w-6 text-primary" />
-                        <h3 className="text-lg font-semibold">
-                            Matches (coming next)
-                        </h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                        Schedule matches and control live events.
-                    </p>
-                </Card>
+                <Link to="/admin/matches">
+                    <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer">
+                        <div className="flex items-center gap-3 mb-2">
+                            <Trophy className="h-6 w-6 text-primary" />
+                            <h3 className="text-lg font-semibold">Matches</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                            Schedule matches and control live events.
+                        </p>
+                    </Card>
+                </Link>
             </div>
         </div>
     );
