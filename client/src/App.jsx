@@ -10,6 +10,7 @@ import NotFoundPage from "@/pages/NotFoundPage";
 import AdminPanelPage from "@/pages/admin/AdminPanelPage.jsx";
 import TeamsAdminPage from "@/pages/admin/TeamsAdminPage";
 import MatchesAdminPage from "@/pages/admin/MatchesAdminPage";
+import MatchControlPage from "@/pages/admin/MatchControlPage";
 
 export default function App() {
     return (
@@ -43,6 +44,14 @@ export default function App() {
                         element={
                             <ProtectedRoute requireAdmin>
                                 <MatchesAdminPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="admin/matches/:id/control"
+                        element={
+                            <ProtectedRoute requireAdmin>
+                                <MatchControlPage />
                             </ProtectedRoute>
                         }
                     />
