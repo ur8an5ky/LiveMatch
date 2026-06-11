@@ -16,4 +16,13 @@ export const matchService = {
         const response = await api.get(`/api/matches/${matchId}/events`);
         return response.data;
     },
+
+    async create(data) {
+        const response = await api.post("/api/matches", data);
+        return response.data;
+    },
+
+    async delete(id) {
+        await api.delete(`/api/matches/${id}`);
+    },
 };
