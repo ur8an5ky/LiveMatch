@@ -17,6 +17,16 @@ export const matchService = {
         return response.data;
     },
 
+    async updateStatus(id, newStatus) {
+        const response = await api.patch(`/api/matches/${id}/status`, { newStatus });
+        return response.data;
+    },
+
+    async addEvent(matchId, event) {
+        const response = await api.post(`/api/matches/${matchId}/events`, event);
+        return response.data;
+    },
+
     async create(data) {
         const response = await api.post("/api/matches", data);
         return response.data;
