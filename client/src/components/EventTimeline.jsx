@@ -25,7 +25,7 @@ export default function EventTimeline({ events }) {
                         )}
                     </div>
                     {event.description && (
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-base text-muted-foreground">
                             {event.description}
                         </p>
                     )}
