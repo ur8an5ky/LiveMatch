@@ -59,7 +59,25 @@ export default function App() {
                         />
                     </Routes>
                 </BrowserRouter>
-                <Toaster richColors position="top-right" />
+                <Toaster
+                    richColors
+                    position="top-center"
+                    expand
+                    duration={8000}
+                    toastOptions={{
+                        style: {
+                            minWidth: '420px',
+                            fontSize: '0.95rem',
+                            padding: '14px 16px',
+                            textAlign: 'center',
+                        },
+                        classNames: {
+                            title: 'w-full text-center',
+                            description: 'w-full text-center',
+                            content: 'w-full text-center',
+                        },
+                    }}
+                />
             </AuthProvider>
         </ThemeProvider>
     );
