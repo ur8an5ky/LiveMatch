@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import {toast} from "sonner";
 
 export default function Layout() {
     const { user, logout } = useAuth();
@@ -12,6 +13,7 @@ export default function Layout() {
     const handleLogout = () => {
         logout();
         navigate("/");
+        toast.success("Logged out");
     };
 
     return (

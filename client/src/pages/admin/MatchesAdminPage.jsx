@@ -96,7 +96,7 @@ export default function MatchesAdminPage() {
                                 </TableCell>
                                 <TableCell className="tabular-nums">
                                     {match.status === "SCHEDULED"
-                                        ? "—"
+                                        ? "-"
                                         : `${match.homeScore} : ${match.awayScore}`}
                                 </TableCell>
                                 <TableCell className="text-sm text-muted-foreground">

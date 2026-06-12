@@ -20,7 +20,7 @@ export default function EventTimeline({ events }) {
                         <span className="font-medium">{event.eventType}</span>
                         {event.teamName && (
                             <span className="text-sm text-muted-foreground">
-                                — {event.teamName}
+                                - {event.teamName}
                             </span>
                         )}
                     </div>
