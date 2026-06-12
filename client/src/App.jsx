@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Layout from "@/components/Layout";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import MatchListPage from "@/pages/MatchListPage";
 import MatchDetailsPage from "@/pages/MatchDetailsPage";
 import LoginPage from "@/pages/LoginPage";
@@ -14,50 +15,52 @@ import MatchControlPage from "@/pages/admin/MatchControlPage";
 
 export default function App() {
     return (
-        <AuthProvider>
-            <BrowserRouter>
-                <Routes>
-                    <Route element={<Layout />}>
-                        <Route index element={<MatchListPage />} />
-                        <Route path="matches/:id" element={<MatchDetailsPage />} />
-                        <Route path="login" element={<LoginPage />} />
+        <ThemeProvider>
+            <AuthProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route element={<Layout />}>
+                            <Route index element={<MatchListPage />} />
+                            <Route path="matches/:id" element={<MatchDetailsPage />} />
+                            <Route path="login" element={<LoginPage />} />
+                            <Route
+                                path="admin"
+                                element={
+                                    <ProtectedRoute requireAdmin>
+                                        <AdminPanelPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="admin/teams"
+                                element={
+                                    <ProtectedRoute requireAdmin>
+                                        <TeamsAdminPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route path="*" element={<NotFoundPage />} />
+                        </Route>
                         <Route
-                            path="admin"
+                            path="admin/matches"
                             element={
                                 <ProtectedRoute requireAdmin>
-                                    <AdminPanelPage />
+                                    <MatchesAdminPage />
                                 </ProtectedRoute>
                             }
                         />
                         <Route
-                            path="admin/teams"
+                            path="admin/matches/:id/control"
                             element={
                                 <ProtectedRoute requireAdmin>
-                                    <TeamsAdminPage />
+                                    <MatchControlPage />
                                 </ProtectedRoute>
                             }
                         />
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Route>
-                    <Route
-                        path="admin/matches"
-                        element={
-                            <ProtectedRoute requireAdmin>
-                                <MatchesAdminPage />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="admin/matches/:id/control"
-                        element={
-                            <ProtectedRoute requireAdmin>
-                                <MatchControlPage />
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
-            </BrowserRouter>
-            <Toaster richColors position="top-right" />
-        </AuthProvider>
+                    </Routes>
+                </BrowserRouter>
+                <Toaster richColors position="top-right" />
+            </AuthProvider>
+        </ThemeProvider>
     );
 }

@@ -1,10 +1,13 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { Sun, Moon } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function Layout() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const { theme, toggle } = useTheme();
 
     const handleLogout = () => {
         logout();
@@ -19,6 +22,13 @@ export default function Layout() {
                         ⚽ LiveMatch
                     </Link>
                     <nav className="flex items-center gap-4">
+                        <Button variant="ghost" size="icon" onClick={toggle}>
+                            {theme === "dark" ? (
+                                <Sun className="h-4 w-4" />
+                            ) : (
+                                <Moon className="h-4 w-4" />
+                            )}
+                        </Button>
                         <Link to="/" className="text-sm hover:underline">
                             Matches
                         </Link>
