@@ -1,0 +1,68 @@
+{
+  "common": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "create": "Utwórz",
+    "loading": "Ładowanie...",
+    "back": "Wstecz",
+    "actions": "Akcje",
+    "save_changes": "Zapisz zmiany",
+    "saving": "Zapisywanie...",
+    "deleting": "Usuwanie..."
+  },
+  "header": {
+    "matches": "Mecze",
+    "admin": "Panel administratora",
+    "login": "Zaloguj",
+    "logout": "Wyloguj"
+  },
+  "login": {
+    "title": "Logowanie administratora",
+    "username": "Nazwa użytkownika",
+    "username_placeholder": "username",
+    "password": "Hasło",
+    "submit": "Zaloguj",
+    "submitting": "Logowanie...",
+    "welcome": "Witaj, {{name}}",
+    "invalid_credentials": "Nieprawidłowe dane logowania"
+  },
+  "match_list": {
+    "title": "Mecze",
+    "empty": "Brak meczów.",
+    "load_error": "Nie udało się pobrać meczów",
+    "new_match_toast": "Nowy mecz: {{home}} vs {{away}}"
+  },
+  "match_details": {
+    "back": "← Wróć do listy meczów",
+    "timeline": "Oś czasu",
+    "not_found": "Nie znaleziono meczu.",
+    "load_error": "Nie udało się pobrać meczu"
+  },
+  "not_found": {
+    "message": "Strona nie znaleziona.",
+    "go_home": "Wróć na stronę główną"
+  },
+  "status": {
+    "LIVE": "NA ŻYWO",
+    "SCHEDULED": "ZAPLANOWANE",
+    "FINISHED": "ZAKOŃCZONE",
+    "CANCELLED": "ODWOŁANE"
+  },
+  "event_type": {
+    "GOAL": "Gol",
+    "OWN_GOAL": "Samobój",
+    "YELLOW_CARD": "Żółta kartka",
+    "RED_CARD": "Czerwona kartka",
+    "SUBSTITUTION": "Zmiana",
+    "PENALTY": "Rzut karny"
+  },
+  "timeline": {
+    "empty": "Brak wydarzeń."
+  },
+  "toast": {
+    "event_added": "{{type}} - {{team}}!",
+    "session_expired": "Sesja wygasła. Zaloguj się ponownie."
+  }
+}

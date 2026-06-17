@@ -4,12 +4,14 @@ import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import MatchCard from "@/components/MatchCard";
 import { matchService } from "@/services/matchService";
+import {useTranslation} from "react-i18next";
 
 export default function MatchListPage() {
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
     const matchesRef = useRef([]);
     const stompClientRef = useRef(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         matchesRef.current = matches;
@@ -19,7 +21,7 @@ export default function MatchListPage() {
         matchService
             .getAll()
             .then(setMatches)
-            .catch(() => toast.error("Could not load matches"))
+            .catch(() => toast.error(t("match_list.load_error")))
             .finally(() => setLoading(false));
     }, []);
 
@@ -65,7 +67,10 @@ export default function MatchListPage() {
                             );
 
                             toast.info(
-                                `${newEvent.eventType} by ${newEvent.teamName}!`,
+                                t("toast.event_added", {
+                                    type: t(`event_type.${newEvent.eventType}`),
+                                    team: newEvent.teamName,
+                                }),
                                 {
                                     duration: 6000,
                                     description: (
@@ -104,7 +109,11 @@ export default function MatchListPage() {
                             return [...prev, newMatch];
                         });
                         toast.info(
-                            `New match: ${newMatch.homeTeam.shortName} vs ${newMatch.awayTeam.shortName}`
+                            t("match_list.new_match_toast", {
+                                home: newMatch.homeTeam.shortName,
+                                away: newMatch.awayTeam.shortName,
+                            }),
+                            { id: `new-match-${newMatch.id}` }
                         );
                     });
                 });
@@ -127,7 +136,7 @@ export default function MatchListPage() {
     if (loading) {
         return (
             <div className="space-y-4">
-                <h1 className="text-3xl font-bold mb-6">Matches</h1>
+                <h1 className="text-3xl font-bold mb-6">{t("match_list.title")}</h1>
                 {[1, 2, 3].map((i) => (
                     <Skeleton key={i} className="h-28 w-full" />
                 ))}
@@ -138,21 +147,21 @@ export default function MatchListPage() {
     if (matches.length === 0) {
         return (
             <div>
-                <h1 className="text-3xl font-bold mb-6">Matches</h1>
-                <p className="text-muted-foreground">No matches yet.</p>
+                <h1 className="text-3xl font-bold mb-6">{t("match_list.title")}</h1>
+                <p className="text-muted-foreground">{t("match_list.empty")}</p>
             </div>
         );
     }
 
     return (
         <div>
-            <h1 className="text-3xl font-bold mb-6">Matches</h1>
+            <h1 className="text-3xl font-bold mb-6">{t("match_list.title")}</h1>
 
             {Object.entries(grouped).map(([status, list]) =>
                 list.length > 0 ? (
                     <section key={status} className="mb-8">
                         <h2 className="text-xl font-semibold mb-3 text-muted-foreground">
-                            {status} ({list.length})
+                            {t(`status.${status}`)} ({list.length})
                         </h2>
                         <div className="space-y-3">
                             {list.map((match) => (

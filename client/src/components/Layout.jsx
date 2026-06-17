@@ -4,11 +4,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import {toast} from "sonner";
+import { useTranslation } from "react-i18next";
 
 export default function Layout() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const { theme, toggle } = useTheme();
+    const { t, i18n } = useTranslation();
+
+    const toggleLanguage = () => {
+        i18n.changeLanguage(i18n.language === "en" ? "pl" : "en");
+    };
 
     const handleLogout = () => {
         logout();
@@ -31,24 +37,27 @@ export default function Layout() {
                                 <Moon className="h-4 w-4" />
                             )}
                         </Button>
+                        <Button variant="ghost" size="sm" onClick={toggleLanguage}>
+                            {i18n.language === "en" ? "PL" : "EN"}
+                        </Button>
                         <Link to="/" className="text-sm hover:underline">
-                            Matches
+                            {t("header.matches")}
                         </Link>
                         {user ? (
                             <>
                                 <Link to="/admin" className="text-sm hover:underline">
-                                    Admin
+                                    {t("header.admin")}
                                 </Link>
                                 <span className="text-sm text-muted-foreground">
                                     {user.username}
                                 </span>
                                 <Button variant="outline" size="sm" onClick={handleLogout}>
-                                    Logout
+                                    {t("header.logout")}
                                 </Button>
                             </>
                         ) : (
                             <Link to="/login" className="text-sm hover:underline">
-                                Login
+                                {t("header.login")}
                             </Link>
                         )}
                     </nav>

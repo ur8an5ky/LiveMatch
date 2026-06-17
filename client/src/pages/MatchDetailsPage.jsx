@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
-import { format } from "date-fns";
+import { useDateFormat } from "@/lib/dateFormat";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import StatusBadge from "@/components/StatusBadge";
 import EventTimeline from "@/components/EventTimeline";
 import { matchService } from "@/services/matchService";
+import {useTranslation} from "react-i18next";
 
 export default function MatchDetailsPage() {
     const { id } = useParams();
@@ -16,6 +17,8 @@ export default function MatchDetailsPage() {
     const [loading, setLoading] = useState(true);
     const stompClientRef = useRef(null);
     const matchRef = useRef(null);
+    const { t } = useTranslation();
+    const format = useDateFormat();
 
     useEffect(() => {
         matchRef.current = match;
@@ -27,7 +30,7 @@ export default function MatchDetailsPage() {
                 setMatch(matchData);
                 setEvents(eventsData);
             })
-            .catch(() => toast.error("Could not load match"))
+            .catch(() => toast.error(t("match_details.load_error")))
             .finally(() => setLoading(false));
     }, [id]);
 
@@ -52,7 +55,12 @@ export default function MatchDetailsPage() {
 
                     setMatch({ ...current, homeScore: newHomeScore, awayScore: newAwayScore });
 
-                    toast.info(`${newEvent.eventType} by ${newEvent.teamName}!`, {
+                    toast.info(
+                        t("toast.event_added", {
+                        type: t(`event_type.${newEvent.eventType}`),
+                        team: newEvent.teamName,
+                        }),
+                        {
                         duration: 6000,
                         description: (
                             <div className="space-y-1">
@@ -101,9 +109,9 @@ export default function MatchDetailsPage() {
     if (!match) {
         return (
             <div className="text-center py-12">
-                <p className="text-muted-foreground mb-4">Match not found.</p>
+                <p className="text-muted-foreground mb-4">{t("match_details.not_found")}</p>
                 <Link to="/" className="text-primary hover:underline">
-                    ← Back to matches
+                    {t("match_details.back")}
                 </Link>
             </div>
         );
@@ -115,7 +123,7 @@ export default function MatchDetailsPage() {
                 to="/"
                 className="text-sm text-muted-foreground hover:text-foreground mb-4 inline-block"
             >
-                ← Back to matches
+                {t("match_details.back")}
             </Link>
 
             <Card className="p-6 mb-6">
@@ -151,7 +159,7 @@ export default function MatchDetailsPage() {
                 </div>
             </Card>
 
-            <h2 className="text-xl font-semibold mb-4">Timeline</h2>
+            <h2 className="text-xl font-semibold mb-4">{t("match_details.timeline")}</h2>
             <EventTimeline events={events} />
         </div>
     );

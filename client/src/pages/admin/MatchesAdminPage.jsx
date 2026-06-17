@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
+import { useDateFormat } from "@/lib/dateFormat";
 import { Plus, Trash2, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ export default function MatchesAdminPage() {
     const [loading, setLoading] = useState(true);
     const [showCreate, setShowCreate] = useState(false);
     const [deletingMatch, setDeletingMatch] = useState(null);
+    const format = useDateFormat();
 
     useEffect(() => {
         matchService

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { authService } from "@/services/authService";
+import { useTranslation } from "react-i18next";
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
@@ -14,6 +15,7 @@ export default function LoginPage() {
     const { login } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const { t } = useTranslation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,12 +23,12 @@ export default function LoginPage() {
         try {
             const data = await authService.login(username, password);
             login(data.token, data.username, data.role);
-            toast.success(`Welcome, ${data.username}`);
+            toast.success(t("login.welcome", { name: data.username }))
 
             const redirectTo = location.state?.from?.pathname || "/admin";
             navigate(redirectTo, { replace: true });
         } catch (err) {
-            const message = err.response?.data?.message || "Invalid credentials";
+            const message = err.response?.data?.message || t("login.invalid_credentials");
             toast.error(message);
         } finally {
             setSubmitting(false);
@@ -35,21 +37,21 @@ export default function LoginPage() {
 
     return (
         <div className="max-w-md mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Admin login</h1>
+            <h1 className="text-3xl font-bold mb-6">{t("login.title")}</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <Label htmlFor="username">Username</Label>
+                    <Label htmlFor="username">{t("login.username")}</Label>
                     <Input
                         id="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        placeholder="admin"
+                        placeholder={t("login.username_placeholder")}
                         required
                         autoFocus
                     />
                 </div>
                 <div>
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">{t("login.password")}</Label>
                     <Input
                         id="password"
                         type="password"
@@ -59,7 +61,7 @@ export default function LoginPage() {
                     />
                 </div>
                 <Button type="submit" className="w-full" disabled={submitting}>
-                    {submitting ? "Signing in..." : "Sign in"}
+                    {submitting ? t("login.submitting") : t("login.submit")}
                 </Button>
             </form>
         </div>

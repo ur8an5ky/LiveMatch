@@ -1,0 +1,68 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "loading": "Loading...",
+    "back": "Back",
+    "actions": "Actions",
+    "save_changes": "Save changes",
+    "saving": "Saving...",
+    "deleting": "Deleting..."
+  },
+  "header": {
+    "matches": "Matches",
+    "admin": "Admin",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "login": {
+    "title": "Admin login",
+    "username": "Username",
+    "username_placeholder": "username",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "welcome": "Welcome, {{name}}",
+    "invalid_credentials": "Invalid credentials"
+  },
+  "match_list": {
+    "title": "Matches",
+    "empty": "No matches yet.",
+    "load_error": "Could not load matches",
+    "new_match_toast": "New match: {{home}} vs {{away}}"
+  },
+  "match_details": {
+    "back": "← Back to matches",
+    "timeline": "Timeline",
+    "not_found": "Match not found.",
+    "load_error": "Could not load match"
+  },
+  "not_found": {
+    "message": "Page not found.",
+    "go_home": "Go home"
+  },
+  "status": {
+    "LIVE": "LIVE",
+    "SCHEDULED": "SCHEDULED",
+    "FINISHED": "FINISHED",
+    "CANCELLED": "CANCELLED"
+  },
+  "event_type": {
+    "GOAL": "Goal",
+    "OWN_GOAL": "Own goal",
+    "YELLOW_CARD": "Yellow card",
+    "RED_CARD": "Red card",
+    "SUBSTITUTION": "Substitution",
+    "PENALTY": "Penalty"
+  },
+  "timeline": {
+    "empty": "No events yet."
+  },
+  "toast": {
+    "event_added": "{{type}} by {{team}}!",
+    "session_expired": "Your session has expired. Please log in again."
+  }
+}

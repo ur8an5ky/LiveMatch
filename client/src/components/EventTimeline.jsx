@@ -1,8 +1,12 @@
+import {useTranslation} from "react-i18next";
+
 export default function EventTimeline({ events }) {
+    const { t } = useTranslation();
+
     if (events.length === 0) {
         return (
             <p className="text-muted-foreground text-center py-8">
-                No events yet.
+                {t("timeline.empty")}
             </p>
         );
     }
@@ -17,7 +21,7 @@ export default function EventTimeline({ events }) {
                             {event.minuteOfMatch}'
                         </span>
                         <EventTypeIcon type={event.eventType} />
-                        <span className="font-medium">{event.eventType}</span>
+                        <span className="font-medium">{t(`event_type.${event.eventType}`)}</span>
                         {event.teamName && (
                             <span className="text-sm text-muted-foreground">
                                 - {event.teamName}

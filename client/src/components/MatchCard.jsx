@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
+import { useDateFormat } from "@/lib/dateFormat";
 import { Card } from "@/components/ui/card";
 import StatusBadge from "./StatusBadge";
+import {useTranslation} from "react-i18next";
 
 export default function MatchCard({ match }) {
+    const { t } = useTranslation();
+    const format = useDateFormat();
+
     return (
         <Link to={`/matches/${match.id}`}>
             <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
