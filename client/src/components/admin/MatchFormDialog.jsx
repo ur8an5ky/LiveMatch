@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { matchService } from "@/services/matchService";
 import { teamService } from "@/services/teamService";
+import {useTranslation} from "react-i18next";
 
 export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
     const [teams, setTeams] = useState([]);
@@ -26,6 +27,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
     const [awayTeamId, setAwayTeamId] = useState("");
     const [startTime, setStartTime] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const { t } = useTranslation();
 
     // Load teams & reset form whenever dialog opens
     useEffect(() => {
@@ -34,7 +36,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
         teamService
             .getAll()
             .then(setTeams)
-            .catch(() => toast.error("Could not load teams"));
+            .catch(() => toast.error(t("match_form.teams_load_error")));
 
         setHomeTeamId("");
         setAwayTeamId("");
@@ -57,7 +59,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
         e.preventDefault();
 
         if (homeTeamId === awayTeamId) {
-            toast.error("Home and away teams must be different");
+            toast.error(t("match_form.different_teams"));
             return;
         }
 
@@ -70,12 +72,12 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
             };
             const saved = await matchService.create(data);
             toast.success(
-                `Match scheduled: ${saved.homeTeam.shortName} vs ${saved.awayTeam.shortName}`
+                t("match_form.scheduled", { home: saved.homeTeam.shortName, away: saved.awayTeam.shortName })
             );
             onSaved(saved);
             onOpenChange(false);
         } catch (err) {
-            const message = err.response?.data?.message || "Could not create match";
+            const message = err.response?.data?.message || t("match_form.error");
             toast.error(message);
         } finally {
             setSubmitting(false);
@@ -86,15 +88,15 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>New match</DialogTitle>
+                    <DialogTitle>{t("match_form.new_title")}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <Label htmlFor="home">Home team</Label>
+                        <Label htmlFor="home">{t("match_form.home_team")}</Label>
                         <Select value={homeTeamId} onValueChange={setHomeTeamId}>
                             <SelectTrigger id="home">
-                                <SelectValue placeholder="Select home team" />
+                                <SelectValue placeholder={t("match_form.select_home")} />
                             </SelectTrigger>
                             <SelectContent>
                                 {teams.map((team) => (
@@ -110,10 +112,10 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
                     </div>
 
                     <div>
-                        <Label htmlFor="away">Away team</Label>
+                        <Label htmlFor="away">{t("match_form.away_team")}</Label>
                         <Select value={awayTeamId} onValueChange={setAwayTeamId}>
                             <SelectTrigger id="away">
-                                <SelectValue placeholder="Select away team" />
+                                <SelectValue placeholder={t("match_form.select_away")} />
                             </SelectTrigger>
                             <SelectContent>
                                 {teams.map((team) => (
@@ -130,7 +132,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
                     </div>
 
                     <div>
-                        <Label htmlFor="startTime">Start time</Label>
+                        <Label htmlFor="startTime">{t("match_form.start_time")}</Label>
                         <Input
                             id="startTime"
                             type="datetime-local"
@@ -147,7 +149,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
                             onClick={() => onOpenChange(false)}
                             disabled={submitting}
                         >
-                            Cancel
+                            {t("common.cancel")}
                         </Button>
                         <Button
                             type="submit"
@@ -155,7 +157,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
                                 submitting || !homeTeamId || !awayTeamId || !startTime
                             }
                         >
-                            {submitting ? "Creating..." : "Create match"}
+                            {submitting ? t("match_form.creating") : t("match_form.create")}
                         </Button>
                     </DialogFooter>
                 </form>

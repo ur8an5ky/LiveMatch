@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { teamService } from "@/services/teamService";
+import {useTranslation} from "react-i18next";
+
 
 /**
  * Reusable team form dialog for create and edit.
@@ -21,6 +23,7 @@ export default function TeamFormDialog({ open, onOpenChange, team, onSaved }) {
     const [shortName, setShortName] = useState("");
     const [country, setCountry] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const { t } = useTranslation();
 
     const isEdit = !!team;
 
@@ -45,11 +48,11 @@ export default function TeamFormDialog({ open, onOpenChange, team, onSaved }) {
             const saved = isEdit
                 ? await teamService.update(team.id, data)
                 : await teamService.create(data);
-            toast.success(isEdit ? "Team updated" : "Team created");
+            toast.success(isEdit ? t("team_form.updated") : t("team_form.created"));
             onSaved(saved);
             onOpenChange(false);
         } catch (err) {
-            const message = err.response?.data?.message || "Operation failed";
+            const message = err.response?.data?.message || t("team_form.error");
             toast.error(message);
         } finally {
             setSubmitting(false);
@@ -61,40 +64,40 @@ export default function TeamFormDialog({ open, onOpenChange, team, onSaved }) {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>
-                        {isEdit ? "Edit team" : "New team"}
+                        {isEdit ? t("team_form.edit_title") : t("team_form.new_title")}
                     </DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name">{t("team_form.name")}</Label>
                         <Input
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="FC Barcelona"
+                            placeholder={t("team_form.name")}
                             required
                             autoFocus
                         />
                     </div>
                     <div>
-                        <Label htmlFor="shortName">Short name</Label>
+                        <Label htmlFor="shortName">{t("team_form.short_name")}</Label>
                         <Input
                             id="shortName"
                             value={shortName}
                             onChange={(e) => setShortName(e.target.value)}
-                            placeholder="FCB"
+                            placeholder={t("team_form.short_name")}
                             maxLength={10}
                             required
                         />
                     </div>
                     <div>
-                        <Label htmlFor="country">Country</Label>
+                        <Label htmlFor="country">{t("team_form.country")}</Label>
                         <Input
                             id="country"
                             value={country}
                             onChange={(e) => setCountry(e.target.value)}
-                            placeholder="Spain"
+                            placeholder={t("team_form.country")}
                             required
                         />
                     </div>
@@ -106,14 +109,10 @@ export default function TeamFormDialog({ open, onOpenChange, team, onSaved }) {
                             onClick={() => onOpenChange(false)}
                             disabled={submitting}
                         >
-                            Cancel
+                            {t("common.cancel")}
                         </Button>
                         <Button type="submit" disabled={submitting}>
-                            {submitting
-                                ? "Saving..."
-                                : isEdit
-                                    ? "Save changes"
-                                    : "Create team"}
+                            {submitting ? t("common.saving") : isEdit ? t("common.save_changes") : t("team_form.create")}
                         </Button>
                     </DialogFooter>
                 </form>
