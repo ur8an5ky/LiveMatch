@@ -64,5 +64,100 @@
   "toast": {
     "event_added": "{{type}} by {{team}}!",
     "session_expired": "Your session has expired. Please log in again."
+  },
+  "admin": {
+    "back": "← Back to admin",
+    "dashboard_title": "Admin panel",
+    "stat_teams": "Teams",
+    "stat_matches": "Matches",
+    "stat_live": "Live now",
+    "manage": "Manage",
+    "card_teams_title": "Teams",
+    "card_teams_desc": "Create, edit and remove football teams.",
+    "card_matches_title": "Matches",
+    "card_matches_desc": "Schedule matches and control live events."
+  },
+  "teams_admin": {
+    "title": "Teams",
+    "new": "New team",
+    "empty": "No teams yet. Click \"New team\" to add one.",
+    "load_error": "Could not load teams",
+    "col_name": "Name",
+    "col_short_name": "Short name",
+    "col_country": "Country"
+  },
+  "matches_admin": {
+    "title": "Matches",
+    "new": "New match",
+    "empty": "No matches yet. Click \"New match\" to schedule one.",
+    "load_error": "Could not load matches",
+    "col_status": "Status",
+    "col_match": "Match",
+    "col_score": "Score",
+    "col_start_time": "Start time"
+  },
+  "control": {
+    "back": "← Back to matches",
+    "view_as_fan": "View as fan",
+    "title": "Match control",
+    "start_match": "Start match",
+    "cancel_match": "Cancel match",
+    "end_match": "End match",
+    "ended_message": "This match has ended. No further actions available.",
+    "load_error": "Could not load match",
+    "not_found": "Match not found.",
+    "status_changed": "Match status changed to {{status}}",
+    "status_error": "Could not change status"
+  },
+  "team_form": {
+    "new_title": "New team",
+    "edit_title": "Edit team",
+    "name": "Name",
+    "short_name": "Short name",
+    "country": "Country",
+    "create": "Create team",
+    "created": "Team created",
+    "updated": "Team updated",
+    "error": "Operation failed"
+  },
+  "team_delete": {
+    "title": "Delete this team?",
+    "description": "You are about to permanently delete team {{name}}. This action cannot be undone. Matches involving this team may also be affected.",
+    "deleted": "Team \"{{name}}\" deleted",
+    "error": "Could not delete team"
+  },
+  "match_form": {
+    "new_title": "New match",
+    "home_team": "Home team",
+    "away_team": "Away team",
+    "start_time": "Start time",
+    "select_home": "Select home team",
+    "select_away": "Select away team",
+    "create": "Create match",
+    "creating": "Creating...",
+    "different_teams": "Home and away teams must be different",
+    "scheduled": "Match scheduled: {{home}} vs {{away}}",
+    "error": "Could not create match",
+    "teams_load_error": "Could not load teams"
+  },
+  "match_delete": {
+    "title": "Delete this match?",
+    "description": "You are about to permanently delete {{home}} vs {{away}}. All match events will be removed too. This cannot be undone.",
+    "deleted": "Match deleted",
+    "error": "Could not delete match"
+  },
+  "add_event": {
+    "title": "Add event",
+    "type": "Type",
+    "minute": "Minute",
+    "team": "Team",
+    "description": "Description (optional)",
+    "description_placeholder": "Player name, notes...",
+    "home_suffix": "(home)",
+    "away_suffix": "(away)",
+    "add": "Add",
+    "adding": "Adding...",
+    "added": "Event added",
+    "error": "Could not add event"
   }
 }

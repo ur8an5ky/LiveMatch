@@ -64,5 +64,100 @@
   "toast": {
     "event_added": "{{type}} - {{team}}!",
     "session_expired": "Sesja wygasła. Zaloguj się ponownie."
+  },
+  "admin": {
+    "back": "← Wróć do panelu",
+    "dashboard_title": "Panel administratora",
+    "stat_teams": "Drużyny",
+    "stat_matches": "Mecze",
+    "stat_live": "Trwające",
+    "manage": "Zarządzaj",
+    "card_teams_title": "Drużyny",
+    "card_teams_desc": "Twórz, edytuj i usuwaj drużyny piłkarskie.",
+    "card_matches_title": "Mecze",
+    "card_matches_desc": "Planuj mecze i kontroluj wydarzenia na żywo."
+  },
+  "teams_admin": {
+    "title": "Drużyny",
+    "new": "Nowa drużyna",
+    "empty": "Brak drużyn. Kliknij \"Nowa drużyna\" aby dodać.",
+    "load_error": "Nie udało się pobrać drużyn",
+    "col_name": "Nazwa",
+    "col_short_name": "Skrót",
+    "col_country": "Kraj"
+  },
+  "matches_admin": {
+    "title": "Mecze",
+    "new": "Nowy mecz",
+    "empty": "Brak meczów. Kliknij \"Nowy mecz\" aby zaplanować.",
+    "load_error": "Nie udało się pobrać meczów",
+    "col_status": "Status",
+    "col_match": "Mecz",
+    "col_score": "Wynik",
+    "col_start_time": "Rozpoczęcie"
+  },
+  "control": {
+    "back": "← Wróć do listy meczów",
+    "view_as_fan": "Widok kibica",
+    "title": "Kontrola meczu",
+    "start_match": "Rozpocznij mecz",
+    "cancel_match": "Odwołaj mecz",
+    "end_match": "Zakończ mecz",
+    "ended_message": "Ten mecz został zakończony. Brak dalszych akcji.",
+    "load_error": "Nie udało się pobrać meczu",
+    "not_found": "Nie znaleziono meczu.",
+    "status_changed": "Status meczu zmieniony na {{status}}",
+    "status_error": "Nie udało się zmienić statusu"
+  },
+  "team_form": {
+    "new_title": "Nowa drużyna",
+    "edit_title": "Edytuj drużynę",
+    "name": "Nazwa",
+    "short_name": "Skrót",
+    "country": "Kraj",
+    "create": "Utwórz drużynę",
+    "created": "Drużyna utworzona",
+    "updated": "Drużyna zaktualizowana",
+    "error": "Operacja nieudana"
+  },
+  "team_delete": {
+    "title": "Usunąć tę drużynę?",
+    "description": "Zaraz na stałe usuniesz drużynę {{name}}. Tej akcji nie można cofnąć. Może to wpłynąć na mecze, w których ta drużyna brała udział.",
+    "deleted": "Drużyna \"{{name}}\" usunięta",
+    "error": "Nie udało się usunąć drużyny"
+  },
+  "match_form": {
+    "new_title": "Nowy mecz",
+    "home_team": "Gospodarze",
+    "away_team": "Goście",
+    "start_time": "Czas rozpoczęcia",
+    "select_home": "Wybierz gospodarzy",
+    "select_away": "Wybierz gości",
+    "create": "Utwórz mecz",
+    "creating": "Tworzenie...",
+    "different_teams": "Gospodarze i goście muszą być różnymi drużynami",
+    "scheduled": "Mecz zaplanowany: {{home}} vs {{away}}",
+    "error": "Nie udało się utworzyć meczu",
+    "teams_load_error": "Nie udało się pobrać drużyn"
+  },
+  "match_delete": {
+    "title": "Usunąć ten mecz?",
+    "description": "Zaraz na stałe usuniesz mecz {{home}} vs {{away}}. Wszystkie wydarzenia tego meczu zostaną usunięte. Tej akcji nie można cofnąć.",
+    "deleted": "Mecz usunięty",
+    "error": "Nie udało się usunąć meczu"
+  },
+  "add_event": {
+    "title": "Dodaj wydarzenie",
+    "type": "Typ",
+    "minute": "Minuta",
+    "team": "Drużyna",
+    "description": "Opis (opcjonalnie)",
+    "description_placeholder": "Nazwisko zawodnika, notatki...",
+    "home_suffix": "(gosp.)",
+    "away_suffix": "(gość.)",
+    "add": "Dodaj",
+    "adding": "Dodawanie...",
+    "added": "Wydarzenie dodane",
+    "error": "Nie udało się dodać wydarzenia"
   }
 }
