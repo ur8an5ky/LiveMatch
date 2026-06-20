@@ -17,6 +17,7 @@ import StatusBadge from "@/components/StatusBadge";
 import MatchFormDialog from "@/components/admin/MatchFormDialog";
 import DeleteMatchDialog from "@/components/admin/DeleteMatchDialog";
 import { matchService } from "@/services/matchService";
+import {useTranslation} from "react-i18next";
 
 export default function MatchesAdminPage() {
     const [matches, setMatches] = useState([]);
@@ -24,12 +25,13 @@ export default function MatchesAdminPage() {
     const [showCreate, setShowCreate] = useState(false);
     const [deletingMatch, setDeletingMatch] = useState(null);
     const format = useDateFormat();
+    const {t} = useTranslation();
 
     useEffect(() => {
         matchService
             .getAll()
             .then(setMatches)
-            .catch(() => toast.error("Could not load matches"))
+            .catch(() => toast.error(t("matches_admin.load_error")))
             .finally(() => setLoading(false));
     }, []);
 
@@ -53,15 +55,15 @@ export default function MatchesAdminPage() {
                     to="/admin"
                     className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                    ← Back to admin
+                    {t("admin.back")}
                 </Link>
             </div>
 
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-bold">Matches</h1>
+                <h1 className="text-3xl font-bold">{t("matches_admin.title")}</h1>
                 <Button onClick={() => setShowCreate(true)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    New match
+                    {t("matches_admin.new")}
                 </Button>
             </div>
 
@@ -73,17 +75,17 @@ export default function MatchesAdminPage() {
                 </div>
             ) : matches.length === 0 ? (
                 <p className="text-muted-foreground text-center py-12">
-                    No matches yet. Click "New match" to schedule one.
+                    {t("matches_admin.empty")}
                 </p>
             ) : (
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Match</TableHead>
-                            <TableHead>Score</TableHead>
-                            <TableHead>Start time</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead>{t("matches_admin.col_status")}</TableHead>
+                            <TableHead>{t("matches_admin.col_match")}</TableHead>
+                            <TableHead>{t("matches_admin.col_score")}</TableHead>
+                            <TableHead>{t("matches_admin.col_start_time")}</TableHead>
+                            <TableHead className="text-right">{t("common.actions")}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

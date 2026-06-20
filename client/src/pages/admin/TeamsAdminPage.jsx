@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import TeamFormDialog from "@/components/admin/TeamFormDialog";
 import DeleteTeamDialog from "@/components/admin/DeleteTeamDialog";
 import { teamService } from "@/services/teamService";
+import {useTranslation} from "react-i18next";
 
 export default function TeamsAdminPage() {
     const [teams, setTeams] = useState([]);
@@ -22,12 +23,13 @@ export default function TeamsAdminPage() {
 
     const [editingTeam, setEditingTeam] = useState(null);   // null = no dialog, undefined = create, object = edit
     const [deletingTeam, setDeletingTeam] = useState(null); // null = no dialog, object = confirm
+    const { t } = useTranslation();
 
     useEffect(() => {
         teamService
             .getAll()
             .then(setTeams)
-            .catch(() => toast.error("Could not load teams"))
+            .catch(() => toast.error(t("teams_admin.load_error")))
             .finally(() => setLoading(false));
     }, []);
 
@@ -52,15 +54,15 @@ export default function TeamsAdminPage() {
                     to="/admin"
                     className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                    ← Back to admin
+                    {t("admin.back")}
                 </Link>
             </div>
 
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-bold">Teams</h1>
+                <h1 className="text-3xl font-bold">{t("teams_admin.title")}</h1>
                 <Button onClick={() => setEditingTeam(undefined)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    New team
+                    {t("teams_admin.new")}
                 </Button>
             </div>
 
@@ -72,16 +74,16 @@ export default function TeamsAdminPage() {
                 </div>
             ) : teams.length === 0 ? (
                 <p className="text-muted-foreground text-center py-12">
-                    No teams yet. Click "New team" to add one.
+                    {t("teams_admin.empty")}
                 </p>
             ) : (
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Short name</TableHead>
-                            <TableHead>Country</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead>{t("teams_admin.col_name")}</TableHead>
+                            <TableHead>{t("teams_admin.col_short_name")}</TableHead>
+                            <TableHead>{t("teams_admin.col_country")}</TableHead>
+                            <TableHead className="text-right">{t("common.actions")}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

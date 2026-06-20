@@ -11,6 +11,7 @@ import EventTimeline from "@/components/EventTimeline.jsx";
 import AddEventForm from "@/components/admin/AddEventForm.jsx";
 import { matchService } from "@/services/matchService.js";
 import { useMatchUpdates } from "@/hooks/useMatchUpdates.js";
+import {useTranslation} from "react-i18next";
 
 export default function MatchControlPage() {
     const { id } = useParams();
@@ -18,6 +19,7 @@ export default function MatchControlPage() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [statusChanging, setStatusChanging] = useState(false);
+    const { t } = useTranslation();
 
     // Initial load
     useEffect(() => {
@@ -26,7 +28,7 @@ export default function MatchControlPage() {
                 setMatch(m);
                 setEvents(e);
             })
-            .catch(() => toast.error("Could not load match"))
+            .catch(() => toast.error(t("control.load_error")))
             .finally(() => setLoading(false));
     }, [id]);
 
@@ -56,10 +58,10 @@ export default function MatchControlPage() {
         setStatusChanging(true);
         try {
             await matchService.updateStatus(id, newStatus);
-            toast.success(`Match status changed to ${newStatus}`);
+            toast.success(t("control.status_changed", { status: t(`status.${newStatus}`) }));
             // setMatch will happen via WebSocket onStatusChange
         } catch (err) {
-            const message = err.response?.data?.message || "Could not change status";
+            const message = err.response?.data?.message || t("control.status_error");
             toast.error(message);
         } finally {
             setStatusChanging(false);
@@ -80,9 +82,9 @@ export default function MatchControlPage() {
     if (!match) {
         return (
             <div className="text-center py-12">
-                <p className="text-muted-foreground mb-4">Match not found.</p>
+                <p className="text-muted-foreground mb-4">{t("control.not_found")}</p>
                 <Link to="/admin/matches" className="text-primary hover:underline">
-                    ← Back to matches
+                    {t("control.back")}
                 </Link>
             </div>
         );
@@ -95,12 +97,12 @@ export default function MatchControlPage() {
                     to="/admin/matches"
                     className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                    ← Back to matches
+                    {t("control.back")}
                 </Link>
                 <Button variant="outline" size="sm" asChild>
                     <Link to={`/matches/${id}`} target="_blank" rel="noreferrer">
                         <ExternalLink className="h-3 w-3 mr-1" />
-                        View as fan
+                        {t("control.view_as_fan")}
                     </Link>
                 </Button>
             </div>
@@ -135,7 +137,7 @@ export default function MatchControlPage() {
             </Card>
 
             <Card className="p-4 mb-4">
-                <h3 className="font-semibold mb-3">Match control</h3>
+                <h3 className="font-semibold mb-3">{t("control.title")}</h3>
                 <div className="flex flex-wrap gap-2">
                     {match.status === "SCHEDULED" && (
                         <>
@@ -144,7 +146,7 @@ export default function MatchControlPage() {
                                 disabled={statusChanging}
                             >
                                 <Play className="h-4 w-4 mr-1" />
-                                Start match
+                                {t("control.start_match")}
                             </Button>
                             <Button
                                 variant="outline"
@@ -152,7 +154,7 @@ export default function MatchControlPage() {
                                 disabled={statusChanging}
                             >
                                 <Ban className="h-4 w-4 mr-1" />
-                                Cancel match
+                                {t("control.cancel_match")}
                             </Button>
                         </>
                     )}
@@ -163,12 +165,12 @@ export default function MatchControlPage() {
                             disabled={statusChanging}
                         >
                             <Square className="h-4 w-4 mr-1" />
-                            End match
+                            {t("control.end_match")}
                         </Button>
                     )}
                     {(match.status === "FINISHED" || match.status === "CANCELLED") && (
                         <p className="text-sm text-muted-foreground">
-                            This match has ended. No further actions available.
+                            {t("control.ended_message")}
                         </p>
                     )}
                 </div>
@@ -180,7 +182,7 @@ export default function MatchControlPage() {
                 </div>
             )}
 
-            <h2 className="text-xl font-semibold mb-4">Timeline</h2>
+            <h2 className="text-xl font-semibold mb-4">{t("match_details.timeline")}</h2>
             <EventTimeline events={events} />
         </div>
     );
