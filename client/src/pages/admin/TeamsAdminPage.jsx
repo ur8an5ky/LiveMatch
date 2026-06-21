@@ -16,6 +16,7 @@ import TeamFormDialog from "@/components/admin/TeamFormDialog";
 import DeleteTeamDialog from "@/components/admin/DeleteTeamDialog";
 import { teamService } from "@/services/teamService";
 import {useTranslation} from "react-i18next";
+import { useTeamName, useCountryName } from "@/lib/teamName";
 
 export default function TeamsAdminPage() {
     const [teams, setTeams] = useState([]);
@@ -24,6 +25,8 @@ export default function TeamsAdminPage() {
     const [editingTeam, setEditingTeam] = useState(null);   // null = no dialog, undefined = create, object = edit
     const [deletingTeam, setDeletingTeam] = useState(null); // null = no dialog, object = confirm
     const { t } = useTranslation();
+    const getTeamName = useTeamName();
+    const getCountryName = useCountryName();
 
     useEffect(() => {
         teamService
@@ -90,10 +93,10 @@ export default function TeamsAdminPage() {
                         {teams.map((team) => (
                             <TableRow key={team.id}>
                                 <TableCell className="font-medium">
-                                    {team.name}
+                                    {getTeamName(team)}
                                 </TableCell>
                                 <TableCell>{team.shortName}</TableCell>
-                                <TableCell>{team.country}</TableCell>
+                                <TableCell>{getCountryName(team.country)}</TableCell>
                                 <TableCell className="text-right">
                                     <Button
                                         variant="ghost"

@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label";
 import { matchService } from "@/services/matchService";
 import { teamService } from "@/services/teamService";
 import {useTranslation} from "react-i18next";
+import { useTeamName } from "@/lib/teamName";
 
 export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
     const [teams, setTeams] = useState([]);
@@ -28,6 +29,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
     const [startTime, setStartTime] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const { t } = useTranslation();
+    const getTeamName = useTeamName();
 
     // Load teams & reset form whenever dialog opens
     useEffect(() => {
@@ -104,7 +106,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
                                         key={team.id}
                                         value={String(team.id)}
                                     >
-                                        {team.name}
+                                        {getTeamName(team)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -124,7 +126,7 @@ export default function MatchFormDialog({ open, onOpenChange, onSaved }) {
                                         value={String(team.id)}
                                         disabled={String(team.id) === homeTeamId}
                                     >
-                                        {team.name}
+                                        {getTeamName(team)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>

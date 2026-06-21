@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { matchService } from "@/services/matchService";
 import {useTranslation} from "react-i18next";
+import { useTeamName } from "@/lib/teamName";
 
 export default function DeleteMatchDialog({ open, onOpenChange, match, onDeleted }) {
     const [deleting, setDeleting] = useState(false);
     const { t } = useTranslation();
+    const getTeamName = useTeamName();
 
     const handleDelete = async () => {
         setDeleting(true);
@@ -39,8 +41,8 @@ export default function DeleteMatchDialog({ open, onOpenChange, match, onDeleted
                     <AlertDialogTitle>{t("match_delete.title")}</AlertDialogTitle>
                     <AlertDialogDescription>
                         {t("match_delete.description", {
-                            home: match?.homeTeam?.name,
-                            away: match?.awayTeam?.name,
+                            home: getTeamName(match?.homeTeam),
+                            away: getTeamName(match?.awayTeam),
                         })}
                     </AlertDialogDescription>
                 </AlertDialogHeader>

@@ -19,12 +19,12 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String name;
 
-    @Column(name = "short_name", length = 10)
+    @Column(nullable = false, name = "short_name", length = 10)
     private String shortName;
 
-    @Column(name = "country", length = 50)
+    @Column(nullable = false, name = "country", length = 50)
     private String country;
 }

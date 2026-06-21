@@ -9,6 +9,7 @@ import StatusBadge from "@/components/StatusBadge";
 import EventTimeline from "@/components/EventTimeline";
 import { matchService } from "@/services/matchService";
 import {useTranslation} from "react-i18next";
+import { useTeamName } from "@/lib/teamName";
 
 export default function MatchDetailsPage() {
     const { id } = useParams();
@@ -19,6 +20,7 @@ export default function MatchDetailsPage() {
     const matchRef = useRef(null);
     const { t } = useTranslation();
     const format = useDateFormat();
+    const getTeamName = useTeamName();
 
     useEffect(() => {
         matchRef.current = match;
@@ -136,7 +138,7 @@ export default function MatchDetailsPage() {
 
                 <div className="flex items-center justify-between">
                     <div className="flex-1 text-right pr-4">
-                        <div className="text-2xl font-bold">{match.homeTeam.name}</div>
+                        <div className="text-2xl font-bold">{getTeamName(match.homeTeam)}</div>
                         <div className="text-sm text-muted-foreground">
                             {match.homeTeam.country}
                         </div>
@@ -151,7 +153,7 @@ export default function MatchDetailsPage() {
                     </div>
 
                     <div className="flex-1 pl-4">
-                        <div className="text-2xl font-bold">{match.awayTeam.name}</div>
+                        <div className="text-2xl font-bold">{getTeamName(match.awayTeam)}</div>
                         <div className="text-sm text-muted-foreground">
                             {match.awayTeam.country}
                         </div>
@@ -160,7 +162,7 @@ export default function MatchDetailsPage() {
             </Card>
 
             <h2 className="text-xl font-semibold mb-4">{t("match_details.timeline")}</h2>
-            <EventTimeline events={events} />
+            <EventTimeline events={events} match={match} />
         </div>
     );
 }

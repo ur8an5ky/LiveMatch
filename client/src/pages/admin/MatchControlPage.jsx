@@ -12,6 +12,7 @@ import AddEventForm from "@/components/admin/AddEventForm.jsx";
 import { matchService } from "@/services/matchService.js";
 import { useMatchUpdates } from "@/hooks/useMatchUpdates.js";
 import {useTranslation} from "react-i18next";
+import { useTeamName } from "@/lib/teamName";
 
 export default function MatchControlPage() {
     const { id } = useParams();
@@ -20,6 +21,7 @@ export default function MatchControlPage() {
     const [loading, setLoading] = useState(true);
     const [statusChanging, setStatusChanging] = useState(false);
     const { t } = useTranslation();
+    const getTeamName = useTeamName();
 
     // Initial load
     useEffect(() => {
@@ -117,7 +119,7 @@ export default function MatchControlPage() {
 
                 <div className="flex items-center justify-between">
                     <div className="flex-1 text-right pr-4">
-                        <div className="text-xl font-bold">{match.homeTeam.name}</div>
+                        <div className="text-xl font-bold">{getTeamName(match.homeTeam)}</div>
                     </div>
 
                     <div className="px-6 text-4xl font-bold tabular-nums">
@@ -131,7 +133,7 @@ export default function MatchControlPage() {
                     </div>
 
                     <div className="flex-1 pl-4">
-                        <div className="text-xl font-bold">{match.awayTeam.name}</div>
+                        <div className="text-xl font-bold">{getTeamName(match.awayTeam)}</div>
                     </div>
                 </div>
             </Card>
@@ -183,7 +185,7 @@ export default function MatchControlPage() {
             )}
 
             <h2 className="text-xl font-semibold mb-4">{t("match_details.timeline")}</h2>
-            <EventTimeline events={events} />
+            <EventTimeline events={events} match={match} />
         </div>
     );
 }

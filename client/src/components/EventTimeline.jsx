@@ -1,7 +1,16 @@
 import {useTranslation} from "react-i18next";
+import { useTeamName } from "@/lib/teamName";
 
-export default function EventTimeline({ events }) {
+export default function EventTimeline({ events, match }) {
     const { t } = useTranslation();
+    const getTeamName = useTeamName();
+
+    const getEventTeamName = (event) => {
+        if (!event.teamId || !match) return getEventTeamName(event) || "";
+        if (event.teamId === match.homeTeam?.id) return getTeamName(match.homeTeam);
+        if (event.teamId === match.awayTeam?.id) return getTeamName(match.awayTeam);
+        return getEventTeamName(event) || "";
+    };
 
     if (events.length === 0) {
         return (
@@ -22,9 +31,9 @@ export default function EventTimeline({ events }) {
                         </span>
                         <EventTypeIcon type={event.eventType} />
                         <span className="font-medium">{t(`event_type.${event.eventType}`)}</span>
-                        {event.teamName && (
+                        {getEventTeamName(event) && (
                             <span className="text-sm text-muted-foreground">
-                                - {event.teamName}
+                                - {getEventTeamName(event)}
                             </span>
                         )}
                     </div>

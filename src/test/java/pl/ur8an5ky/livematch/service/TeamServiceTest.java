@@ -35,9 +35,9 @@ class TeamServiceTest {
     @BeforeEach
     void setUp() {
         sampleTeam = Team.builder()
-                .id(1L).name("Test FC").shortName("TFC").country("Testland")
+                .id(1L).name("Test FC").shortName("TFC").country("TL")
                 .build();
-        sampleDto = new TeamDto(1L, "Test FC", "TFC", "Testland");
+        sampleDto = new TeamDto(1L, "Test FC", "TFC", "TL");
     }
 
     @Test
@@ -73,7 +73,7 @@ class TeamServiceTest {
 
     @Test
     void shouldCreateAndReturnTeam() {
-        TeamCreateDto createDto = new TeamCreateDto("Test FC", "TFC", "Testland");
+        TeamCreateDto createDto = new TeamCreateDto("Test FC", "TFC", "TL");
         when(teamMapper.fromCreateDto(createDto)).thenReturn(sampleTeam);
         when(teamRepository.save(sampleTeam)).thenReturn(sampleTeam);
         when(teamMapper.toDto(sampleTeam)).thenReturn(sampleDto);

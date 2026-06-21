@@ -18,6 +18,7 @@ import MatchFormDialog from "@/components/admin/MatchFormDialog";
 import DeleteMatchDialog from "@/components/admin/DeleteMatchDialog";
 import { matchService } from "@/services/matchService";
 import {useTranslation} from "react-i18next";
+import { useTeamName } from "@/lib/teamName";
 
 export default function MatchesAdminPage() {
     const [matches, setMatches] = useState([]);
@@ -26,6 +27,7 @@ export default function MatchesAdminPage() {
     const [deletingMatch, setDeletingMatch] = useState(null);
     const format = useDateFormat();
     const {t} = useTranslation();
+    const getTeamName = useTeamName();
 
     useEffect(() => {
         matchService
@@ -95,7 +97,7 @@ export default function MatchesAdminPage() {
                                     <StatusBadge status={match.status} />
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    {match.homeTeam.name} vs {match.awayTeam.name}
+                                    {getTeamName(match.homeTeam)} vs {getTeamName(match.awayTeam)}
                                 </TableCell>
                                 <TableCell className="tabular-nums">
                                     {match.status === "SCHEDULED"
