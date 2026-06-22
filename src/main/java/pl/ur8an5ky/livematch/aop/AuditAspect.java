@@ -31,6 +31,17 @@ public class AuditAspect {
 
     private final AuditLogService auditLogService;
 
+    /**
+     * Around advice that wraps every {@code @Auditable} method invocation.
+     * Measures execution time, captures arguments, and writes an audit entry
+     * regardless of whether the target method succeeded or threw an exception.
+     * Any failure to persist the audit entry is logged but swallowed,
+     * so business logic is never affected by audit infrastructure errors.
+     *
+     * @param joinPoint AspectJ join point representing the intercepted method call
+     * @return the original method's return value
+     * @throws Throwable rethrows whatever the target method threw
+     */
     @Around("@annotation(pl.ur8an5ky.livematch.aop.Auditable)")
     public Object audit(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = buildMethodName(joinPoint);
@@ -61,6 +72,9 @@ public class AuditAspect {
         }
     }
 
+    /**
+     * Builds a short identifier of the intercepted method in the form {@code ClassName.methodName}.
+     */
     private String buildMethodName(ProceedingJoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         return signature.getDeclaringType().getSimpleName()
@@ -68,6 +82,10 @@ public class AuditAspect {
                 + signature.getName();
     }
 
+    /**
+     * Truncates the given text to {@value #MAX_ARGS_LENGTH} characters
+     * to prevent overly large method argument strings from bloating the audit table.
+     */
     private String truncate(String text) {
         if (text == null) return null;
         return text.length() > MAX_ARGS_LENGTH

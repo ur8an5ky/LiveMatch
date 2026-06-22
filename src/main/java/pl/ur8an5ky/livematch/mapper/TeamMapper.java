@@ -11,6 +11,7 @@ import pl.ur8an5ky.livematch.dto.TeamDto;
 @Component
 public class TeamMapper {
 
+    /** Converts a Team entity to its DTO representation. */
     public TeamDto toDto(Team team) {
         if (team == null) return null;
         return new TeamDto(
@@ -21,6 +22,7 @@ public class TeamMapper {
         );
     }
 
+    /** Builds a new Team entity from a creation DTO (for POST). */
     public Team fromCreateDto(TeamCreateDto dto) {
         return Team.builder()
                 .name(dto.name())

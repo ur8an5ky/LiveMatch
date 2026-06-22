@@ -10,6 +10,10 @@ import pl.ur8an5ky.livematch.dto.LoginResponse;
 import pl.ur8an5ky.livematch.repository.UserRepository;
 import pl.ur8an5ky.livematch.security.JwtUtil;
 
+/**
+ * Handles user authentication: verifies credentials against the database
+ * and issues a signed JWT token on success.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -18,6 +22,16 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    /**
+     * Verifies the username and password, then returns a fresh JWT token
+     * along with user metadata. Throws {@link BadCredentialsException} in both
+     * "user not found" and "wrong password" cases to avoid leaking which one
+     * actually failed.
+     *
+     * @param request login credentials
+     * @return JWT token, username, role, and token lifetime
+     * @throws BadCredentialsException if username does not exist or password does not match
+     */
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));

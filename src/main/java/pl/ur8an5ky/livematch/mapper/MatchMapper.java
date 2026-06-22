@@ -5,6 +5,10 @@ import org.springframework.stereotype.Component;
 import pl.ur8an5ky.livematch.domain.Match;
 import pl.ur8an5ky.livematch.dto.MatchDto;
 
+/**
+ * Converts the Match entity to its DTO representation,
+ * delegating team conversion to TeamMapper.
+ */
 @Component
 @RequiredArgsConstructor
 public class MatchMapper {

@@ -4,6 +4,9 @@ import org.springframework.stereotype.Component;
 import pl.ur8an5ky.livematch.domain.MatchEvent;
 import pl.ur8an5ky.livematch.dto.MatchEventDto;
 
+/**
+ * Converts the MatchEvent entity to its DTO representation.
+ */
 @Component
 public class MatchEventMapper {
 

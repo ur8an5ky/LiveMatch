@@ -17,6 +17,11 @@ import pl.ur8an5ky.livematch.aop.Auditable;
 
 import java.util.List;
 
+/**
+ * Manages in-match events such as goals, cards, and period markers.
+ * Newly added events are broadcast over WebSocket to all clients subscribed
+ * to the match, which is the core mechanism enabling real-time updates.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -28,6 +33,14 @@ public class MatchEventService {
     private final TeamService teamService;
     private final SimpMessagingTemplate messagingTemplate;
 
+    /**
+     * Returns all events of the given match, ordered chronologically.
+     *
+     * @param matchId match identifier
+     * @return list of events (may be empty)
+     * @throws pl.ur8an5ky.livematch.exception.ResourceNotFoundException
+     *         if the match does not exist
+     */
     @Transactional(readOnly = true)
     public List<MatchEventDto> getByMatchId(Long matchId) {
         matchService.findOrThrow(matchId);
@@ -37,6 +50,17 @@ public class MatchEventService {
                 .toList();
     }
 
+    /**
+     * Registers a new in-match event, updates the score if it is a goal,
+     * and publishes the event to the {@code /topic/matches/{matchId}/events}
+     * WebSocket channel so that subscribed clients receive it immediately.
+     * Audited via {@link Auditable}.
+     *
+     * @param matchId match identifier
+     * @param dto     event payload (type, minute, optional team, description)
+     * @return the persisted event
+     * @throws BusinessRuleViolationException if the match is finished or cancelled
+     */
     @Auditable
     public MatchEventDto addEvent(Long matchId, MatchEventCreateDto dto) {
         Match match = matchService.findOrThrow(matchId);
