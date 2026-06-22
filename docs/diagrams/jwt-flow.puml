@@ -1,0 +1,103 @@
+@startuml
+title Przepływ autentykacji JWT w LiveMatch
+
+skinparam shadowing false
+skinparam sequenceArrowThickness 1.5
+skinparam ParticipantBackgroundColor #ECF0F1
+skinparam ParticipantBorderColor #34495E
+skinparam ActorBackgroundColor #D6EAF8
+skinparam DatabaseBackgroundColor #FAD7A0
+skinparam NoteBackgroundColor #FCF3CF
+skinparam NoteBorderColor #B7950B
+
+actor "Administrator" as user
+participant "Frontend\n(React + axios)" as fe
+participant "AuthController" as ctrl
+participant "AuthService" as svc
+participant "PasswordEncoder\n(BCrypt)" as bcrypt
+participant "JwtUtil" as jwt
+database "UserRepository\n(JPA)" as repo
+participant "JwtAuthFilter" as filter
+
+== Faza 1: Logowanie ==
+
+user -> fe : wprowadza login i hasło
+activate fe
+fe -> ctrl : POST /api/auth/login\n{ username, password }
+activate ctrl
+
+ctrl -> svc : login(LoginRequest)
+activate svc
+
+svc -> repo : findByUsername("admin")
+activate repo
+repo --> svc : User { passwordHash, role }
+deactivate repo
+
+svc -> bcrypt : matches(plainPwd, hash)
+activate bcrypt
+bcrypt --> svc : true
+deactivate bcrypt
+
+svc -> jwt : generate(username, role)
+activate jwt
+jwt -> jwt : HMAC-SHA256\nsign(claims, secret)
+jwt --> svc : token JWT
+deactivate jwt
+
+svc --> ctrl : LoginResponse(token, ...)
+deactivate svc
+
+ctrl --> fe : 200 OK { token, username, role, expiresInMs }
+deactivate ctrl
+
+fe -> fe : localStorage.setItem('token', ...)
+fe --> user : przekierowanie do /admin
+deactivate fe
+
+note over fe
+    Od tej chwili axios automatycznie
+    dorzuca nagłówek:
+    Authorization: Bearer <token>
+    do każdego żądania
+end note
+
+== Faza 2: Żądanie chronionego zasobu ==
+
+user -> fe : klika "Dodaj mecz"
+activate fe
+fe -> filter : POST /api/matches\nAuthorization: Bearer <token>
+activate filter
+
+filter -> jwt : isValid(token)
+activate jwt
+jwt -> jwt : verify signature\ncheck expiration
+jwt --> filter : true
+deactivate jwt
+
+filter -> jwt : extractUsername(token)
+activate jwt
+jwt --> filter : "admin"
+deactivate jwt
+
+filter -> jwt : extractRole(token)
+activate jwt
+jwt --> filter : "ROLE_ADMIN"
+deactivate jwt
+
+filter -> filter : SecurityContextHolder\n.setAuthentication(...)
+
+filter -> ctrl : chain.doFilter()
+activate ctrl
+ctrl -> svc : create(dto)
+activate svc
+svc --> ctrl : MatchDto
+deactivate svc
+ctrl --> fe : 200 OK { match }
+deactivate ctrl
+deactivate filter
+
+fe --> user : wyświetlenie wyniku
+deactivate fe
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml
+title Architektura wdrożeniowa LiveMatch (środowisko lokalne)
+
+skinparam linetype ortho
+skinparam shadowing false
+skinparam ArrowColor #34495E
+skinparam node {
+    BackgroundColor #ECF0F1
+    BorderColor #34495E
+}
+skinparam database {
+    BackgroundColor #FAD7A0
+    BorderColor #B7950B
+}
+skinparam cloud {
+    BackgroundColor #D6EAF8
+    BorderColor #2874A6
+}
+skinparam component {
+    BackgroundColor #FFFFFF
+    BorderColor #34495E
+}
+
+actor "Użytkownik\n(kibic / admin)" as user
+
+node "Komputer klienta" as client {
+    component "Przeglądarka WWW" as browser
+}
+
+node "Host Dockera" as host {
+    cloud "livematch-net (Docker bridge)" as network {
+        node "Kontener: web" as web_node {
+            component "nginx" as nginx
+            component "Pliki SPA\n(React build)" as spa
+            note bottom of nginx
+                Port 80 (lokalnie)
+                Port 8090 (AGH)
+            end note
+        }
+
+        node "Kontener: app" as app_node {
+            component "Spring Boot" as spring
+            component "REST API" as rest
+            component "WebSocket\n(STOMP)" as ws
+            note bottom of spring
+                Port wewnętrzny: 8081
+            end note
+        }
+
+        database "Kontener: postgres" as db {
+            component "PostgreSQL 16" as pg
+            note bottom of pg
+                Port wewnętrzny: 5432
+                Wolumen: postgres_data
+            end note
+        }
+    }
+}
+
+user --> browser
+browser -[#2874A6]-> nginx : "HTTP/WebSocket\nport 80 / 8090"
+nginx -[#27AE60]-> rest : "/api/* → app:8081\n(reverse proxy)"
+nginx -[#27AE60]-> ws : "/ws → app:8081\n(WebSocket upgrade)"
+nginx --> spa : "serwowanie\nplików SPA"
+rest -[#B7950B]-> pg : "JDBC\npostgres:5432"
+ws -[#B7950B]-> pg : "JDBC"
+
+@enduml

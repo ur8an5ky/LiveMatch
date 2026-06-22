@@ -1,37 +1,14 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: livematch-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: livematch
-      POSTGRES_USER: livematch
-      POSTGRES_PASSWORD: livematch_dev_pass
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U livematch -d livematch"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - livematch-net
-
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: livematch-app
     restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/livematch
-      SPRING_DATASOURCE_USERNAME: livematch
-      SPRING_DATASOURCE_PASSWORD: livematch_dev_pass
+      SPRING_DATASOURCE_URL: jdbc:postgresql://pascal.fis.agh.edu.pl:5432/u0urbanski
+      SPRING_DATASOURCE_USERNAME: u0urbanski
+      SPRING_DATASOURCE_PASSWORD: 0urbanski
     ports:
       - "8081:8081"
     networks:
@@ -46,13 +23,69 @@ services:
     depends_on:
       - app
     ports:
-      - "80:80"
+      - "8090:80"
     networks:
       - livematch-net
-
-volumes:
-  postgres_data:
 
 networks:
   livematch-net:
     driver: bridge
+    
+#services:
+#  postgres:
+#    image: postgres:16-alpine
+#    container_name: livematch-postgres
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_DB: livematch
+#      POSTGRES_USER: livematch
+#      POSTGRES_PASSWORD: livematch_dev_pass
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U livematch -d livematch"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - livematch-net
+#
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: livematch-app
+#    restart: unless-stopped
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/livematch
+#      SPRING_DATASOURCE_USERNAME: livematch
+#      SPRING_DATASOURCE_PASSWORD: livematch_dev_pass
+#    ports:
+#      - "8081:8081"
+#    networks:
+#      - livematch-net
+#
+#  web:
+#    build:
+#      context: ./client
+#      dockerfile: Dockerfile
+#    container_name: livematch-web
+#    restart: unless-stopped
+#    depends_on:
+#      - app
+#    ports:
+#      - "80:80"
+#    networks:
+#      - livematch-net
+#
+#volumes:
+#  postgres_data:
+#
+#networks:
+#  livematch-net:
+#    driver: bridge

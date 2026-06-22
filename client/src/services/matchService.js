@@ -18,7 +18,7 @@ export const matchService = {
     },
 
     async updateStatus(id, newStatus) {
-        const response = await api.patch(`/api/matches/${id}/status`, { newStatus });
+        const response = await api.patch(`/api/matches/${id}/status`, { status: newStatus });
         return response.data;
     },
 
