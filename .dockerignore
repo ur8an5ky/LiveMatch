@@ -1,0 +1,32 @@
+# Build artifacts
+target/
+*.jar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Git
+.git/
+.gitignore
+
+# Frontend (built separately in step 2)
+client/
+
+# Documentation
+docs/
+*.md
+
+# Logs
+*.log
+logs/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Docker itself
+docker-compose.yml
+Dockerfile
+.dockerignore

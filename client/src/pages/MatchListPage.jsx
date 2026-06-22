@@ -28,7 +28,10 @@ export default function MatchListPage() {
     useEffect(() => {
         if (loading || matches.length === 0) return;
 
-        const wsUrl = import.meta.env.VITE_API_URL.replace("http", "ws") + "/ws";
+        // const wsUrl = import.meta.env.VITE_API_URL.replace("http", "ws") + "/ws";
+        const wsUrl =
+            import.meta.env.VITE_WS_URL ||
+            `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws`;
         const client = new Client({
             brokerURL: wsUrl,
             reconnectDelay: 5000,

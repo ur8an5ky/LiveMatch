@@ -37,7 +37,10 @@ export default function MatchDetailsPage() {
     }, [id]);
 
     useEffect(() => {
-        const wsUrl = import.meta.env.VITE_API_URL.replace("http", "ws") + "/ws";
+        // const wsUrl = import.meta.env.VITE_API_URL.replace("http", "ws") + "/ws";
+        const wsUrl =
+            import.meta.env.VITE_WS_URL ||
+            `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws`;
 
         const client = new Client({
             brokerURL: wsUrl,
